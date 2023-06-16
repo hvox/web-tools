@@ -1,0 +1,12 @@
+#!/bin/sh -e
+
+site=$1
+path=$2
+[ -z "$site" ] && exit 1
+[ -z "$path" ] && path=$(openssl rand -hex 32)
+url="https://$site/$path/"
+printf "Copying current directory to %s\n" "$url"
+printf "%s" "$url" | xclip -selection clipboard
+rsync --recursive --times --compress --delete --progress \
+	"$(pwd)/" "vps:/var/www/$site/$path/"
+printf "%s\n" "This directory is now available at $url"
