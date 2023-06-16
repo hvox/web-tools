@@ -1,0 +1,8 @@
+#!/bin/env python3
+
+SPECIAL_CHARACTERS = {"&": "amp", "<": "lt", ">": "gt"}
+TRANSLATION_TABLE = {ord(char): f"&{code};" for char, code in SPECIAL_CHARACTERS.items()}
+
+text = open(0).read()
+html = text.translate(TRANSLATION_TABLE)
+print(html)
