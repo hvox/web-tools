@@ -1,0 +1,8 @@
+#!/bin/env python3
+
+source = open(0).read()
+lvl = 0
+for line in (line.strip() for line in source.split("\n")):
+    lvl = 0 if line.endswith("}") else lvl
+    print("\t" * lvl + line)
+    lvl = 1 if line.endswith("{") else lvl
