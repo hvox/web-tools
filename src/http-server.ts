@@ -60,21 +60,9 @@ function getPathSuffix(path: string) {
 function augmentHtml(htmlBytes: Uint8Array) {
 	const html = new TextDecoder().decode(htmlBytes);
 	const head = html.indexOf("</head>\n");
-	const script = [
-		'document.addEventListener("DOMContentLoaded", _ => {',
-		"	// TODO: fix wrong scroll on page reaload",
-		'	const scroll = sessionStorage.getItem("scroll");',
-		'	sessionStorage.removeItem("\'scroll");',
-		"	if (scroll) window.scrollTo(0, scroll);",
-		"});",
-		"// TODO: move fetch into DOMContentLoaded handler",
-		`fetch("${WAIT_PATH}${WAIT_TOKEN}").then(_ => {`,
-		'	sessionStorage.setItem("scroll", window.scrollY);',
-		"	location.reload();",
-		"}, error => {",
-		'	console.error("ERROR:", error);',
-		"});",
-	].join("\n");
+	const script = Deno.readTextFileSync(
+		new URL("./refresher.js", import.meta.url).pathname,
+	).replace(/\n+$/, "").replace("WAITREQUEST", WAIT_PATH + WAIT_TOKEN);
 	return new TextEncoder().encode([
 		html.substring(0, head),
 		"\t<script>\n" + script.replace(/^/gm, "\t\t") + "\n\t</script>\n",
