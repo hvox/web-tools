@@ -1,0 +1,4 @@
+#!/bin/sh -e
+
+server="$(dirname "$(realpath -s "$0")")/src/http-server.ts"
+deno run -A "$server" "$@"
