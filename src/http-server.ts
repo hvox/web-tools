@@ -28,7 +28,9 @@ async function httpRequestHandler(req: Request): Promise<Response> {
 }
 
 async function loadFile(path: string) {
-	if (path in SITE_FILES) return SITE_FILES[path];
+	if (path in SITE_FILES && SITE_FILES[path].type != MIME_TYPES.html) {
+		return SITE_FILES[path];
+	}
 	try {
 		let body = await Deno.readFile(path);
 		const type = MIME_TYPES[getPathSuffix(path)] ?? MIME_TYPES.bin;
