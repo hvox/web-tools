@@ -49,7 +49,15 @@ async function watchFile(path: string) {
 	for await (const event of watcher) {
 		if (event.kind == "modify" || event.kind == "remove") break;
 	}
-	watcher.close();
+	try {
+		watcher.close();
+	} catch (error) {
+		if (error instanceof Deno.errors.BadResource) {
+			console.warn("Somehow watcher.close() failed");
+		} else {
+			throw error;
+		}
+	}
 	delete SITE_FILES[path];
 	WAIT_TOKEN = "?" + crypto.randomUUID();
 	// TODO: is it infinity cycle?
